@@ -14,7 +14,7 @@ This is a Spring Boot application for managing employee performance ratings.
 
 1. Navigate to the project directory:
     ```sh
-    cd employee-performance-app
+    cd employee-performance-app/employee-performance-app
     ```
 
 2. Build the project:
