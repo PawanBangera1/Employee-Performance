@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Performance</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Employee Performance</h1>
+        <form id="employeeForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating" required>
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+            </select>
+            <button type="submit">Add Employee</button>
+        </form>
+        <h2>Employee List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            <tbody id="employeeList"></tbody>
+        </table>
+        <h2>Actual Percentages</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody id="percentagesList"></tbody>
+        </table>
+        <h2>Deviations</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Deviation</th>
+                </tr>
+            </thead>
+            <tbody id="deviationsList"></tbody>
+        </table>
+        <h2>Suggested Revisions</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            <tbody id="suggestionsList"></tbody>
+        </table>
+    </div>
+
+    <script>
+        function fetchAndDisplayEmployees() {
+            fetch('/employees')
+                .then(response => response.json())
+                .then(employees => {
+                    const employeeList = document.getElementById('employeeList');
+                    employeeList.innerHTML = '';
+                    employees.forEach(employee => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${employee.name}</td><td>${employee.rating}</td>`;
+                        employeeList.appendChild(tr);
+                    });
+                });
+        }
+
+        function fetchAndDisplayPercentages() {
+            fetch('/employees/percentages')
+                .then(response => response.json())
+                .then(percentages => {
+                    const percentagesList = document.getElementById('percentagesList');
+                    percentagesList.innerHTML = '';
+
+                    // Convert object to array and sort by percentage in descending order
+                    const sortedPercentages = Object.entries(percentages).sort((a, b) => b[1] - a[1]);
+
+                    sortedPercentages.forEach(([category, percentage]) => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${category}</td><td>${percentage.toFixed(2)}%</td>`;
+                        percentagesList.appendChild(tr);
+                    });
+                });
+        }
+
+        function fetchAndDisplayDeviations() {
+            fetch('/employees/deviations')
+                .then(response => response.json())
+                .then(deviations => {
+                    const deviationsList = document.getElementById('deviationsList');
+                    deviationsList.innerHTML = '';
+
+                    // Convert object to array and sort by deviation in descending order
+                    const sortedDeviations = Object.entries(deviations).sort((a, b) => b[1] - a[1]);
+
+                    sortedDeviations.forEach(([category, deviation]) => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${category}</td><td>${deviation.toFixed(2)}%</td>`;
+                        deviationsList.appendChild(tr);
+                    });
+                });
+        }
+
+        function fetchAndDisplaySuggestions() {
+            fetch('/employees/suggestions')
+                .then(response => response.json())
+                .then(suggestions => {
+                    const suggestionsList = document.getElementById('suggestionsList');
+                    suggestionsList.innerHTML = '';
+                    suggestions.forEach(employee => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `<td>${employee.name}</td><td>${employee.rating}</td>`;
+                        suggestionsList.appendChild(tr);
+                    });
+                });
+        }
+
+        document.getElementById('employeeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const rating = document.getElementById('rating').value;
+
+            fetch('/employees', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, rating })
+            })
+            .then(response => response.json())
+            .then(employee => {
+                fetchAndDisplayEmployees();
+                fetchAndDisplayPercentages();
+                fetchAndDisplayDeviations();
+                fetchAndDisplaySuggestions();
+            });
+        });
+
+        // Initial fetch and display
+        fetchAndDisplayEmployees();
+        fetchAndDisplayPercentages();
+        fetchAndDisplayDeviations();
+        fetchAndDisplaySuggestions();
+    </script>
+</body>
+</html>
