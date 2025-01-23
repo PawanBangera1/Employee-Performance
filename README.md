@@ -26,8 +26,13 @@ This is a Spring Boot application for managing employee performance ratings.
     ```sh
     mvn spring-boot:run
     ```
+4. Local Server URL:
+    ```sh
+    http://localhost:8081/
+    ```
+    
 
-### Using Docker
+### Using Docker (Change server port 8080)
 
 1. Build the Docker image:
     ```sh
