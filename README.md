@@ -38,8 +38,10 @@ This is a Spring Boot application for managing employee performance ratings.
     ```sh
     docker run -p 8080:8080 employee-performance-app
     ```
-3. Docker Hub Image : pawanbangera80/springbootapplication:latest
-
+3. Docker Hub Image :
+4.  ```sh
+    pawanbangera80/springbootapplication:latest
+    ```
 
 ## Accessing the Application
 
